@@ -1,0 +1,10 @@
+version: 0.10
+
+youtube_analiytics_api_token:
+
+download_root_directory: "C:\"
+
+amount_video_content: 10
+
+keywords:
+  - example keyword
