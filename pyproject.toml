@@ -9,11 +9,18 @@ dependencies = [
     "typer",
     "pytube",
     "rich",
-    "python-dotenv"
+    "python-dotenv",
+    "pydantic"
 ]
 
 [tool.setuptools]
-packages = ["video_content_preprocessor", "video_content_preprocessor.utilities"]
+packages = ["video_content_preprocessor",
+    "video_content_preprocessor.utilities",
+    "video_content_preprocessor.downloader",
+    "video_content_preprocessor.model",
+    "video_content_preprocessor.content_filter",
+    "video_content_preprocessor.content_filter.apiutility",
+    "video_content_preprocessor.content_filter.entity"]
 
 [tool.setuptools.package-data]
 "*" = ["*.txt"]
