@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "video-content-preprocessor"
+version = "0.1.0"
+dependencies = [
+    "typer",
+    "pytube",
+    "rich",
+    "python-dotenv"
+]
+
+[tool.setuptools]
+packages = ["video_content_preprocessor", "video_content_preprocessor.utilities"]
+
+[tool.setuptools.package-data]
+"*" = ["*.txt"]
+
+[project.scripts]
+ac = "video_content_preprocessor.__init__:app"
+
