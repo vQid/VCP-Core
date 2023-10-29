@@ -19,5 +19,5 @@ packages = ["video_content_preprocessor", "video_content_preprocessor.utilities"
 "*" = ["*.txt"]
 
 [project.scripts]
-ac = "video_content_preprocessor.__init__:app"
+vcp = "video_content_preprocessor.__init__:app"
 
