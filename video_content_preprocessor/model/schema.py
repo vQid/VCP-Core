@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class VPC(BaseModel):
+class VCP(BaseModel):
     version: float
     youtube_analytics_api_token: str
     download_root_directory: str
