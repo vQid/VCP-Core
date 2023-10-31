@@ -3,7 +3,7 @@ from pathlib import Path
 import yaml
 from pydantic import ValidationError
 
-from video_content_preprocessor.model.schema import VPC
+from video_content_preprocessor.model.schema import VCP
 
 
 def _load_and_validate_yaml(configuration_path: Path):
@@ -12,9 +12,10 @@ def _load_and_validate_yaml(configuration_path: Path):
         # Load YAML-File
         with open(configuration_path, 'r') as f:
             daten = yaml.safe_load(f)
+            print(daten)
 
-        # Daten mit Pydantic validieren
-        config = VPC(**daten)
+        # Validate Input with pydantic
+        config = VCP(**daten)
         print("Validated Data:", config)
         return config
 
