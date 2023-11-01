@@ -29,7 +29,7 @@ class VideoChecker:
             published_after_str = published_after.isoformat("T") + "Z"  # Convert to String like ISO 8601-Format
 
             for query in self.keywords_list:
-                print(f"searching for \"{query}\"")
+                #(f"searching for \"{query}\"")
                 search_response = self.youtube.search().list(
                     q=query,
                     type="video",
@@ -48,16 +48,13 @@ class VideoChecker:
 
                     video_info = None
                     try:
-                        print("About to retrieve video info...")
+                        print(f"About to retrieve video info for {video_url}")
                         video_info = self.youtube.videos().list(
                             part='snippet, contentDetails',
                             id=video_id
                         ).execute()
                     except Exception as e:
                         print(f"Error retrieving video info: {e}")
-
-
-                    pprint.pprint(video_info)
 
                     title = video_element['snippet']['title']
                     duration = video_info["items"][0]['contentDetails']['duration']
@@ -76,8 +73,8 @@ class VideoChecker:
 
                         if len(captions) > 0:
 
-                            pprint.pprint(captions)
-                            pprint.pprint(video_element)
+                            #pprint.pprint(captions)
+                            #pprint.pprint(video_element)
                             # Generation of the video class instance of passed data
                             videos_data.mkdir(parents=True, exist_ok=True)
                             csv_file = videos_data / ("register" + ".csv")
@@ -111,7 +108,7 @@ class VideoChecker:
 
     def download_captions_by_url(self, video_id, path_to_save):
         transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'], preserve_formatting=True)
-        pprint.pprint(transcript)
+        #pprint.pprint(transcript)
         formatter = JSONFormatter()
 
         # .format_transcript(transcript) turns the transcript into a JSON string.
@@ -124,3 +121,4 @@ class VideoChecker:
             with open(path_to_save, 'w', encoding='utf-8') as f:
                 f.write(json_formatted)
         return transcript
+
