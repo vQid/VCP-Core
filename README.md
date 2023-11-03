@@ -1,2 +1,5 @@
 # VCP-Core
-A fully automated video content preprocessor for further video content creations.
+Video Content Preprocessor (VCP) enables fetching of YouTube Video Contentes including information about the video. The Framework does allow to download and process a script for further usage.
+
+
+### TODO USAGE DOCUMENTATION
