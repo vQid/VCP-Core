@@ -1,7 +1,7 @@
 import json
-import re
 from pathlib import Path
 
+import openai
 import typer
 
 from video_content_preprocessor.console import console
@@ -43,6 +43,51 @@ def _run_config(yml_path: Path):
             console.print(f"Exception {e} occurred...")
 
 
+@app.command(name="enrich-chat-gpt")
+def _enrich_caption(yml_path: Path):
+    vcp = _load_and_validate_yaml(yml_path)
+    subpath = Path(vcp.download_root_directory) / "vcp"
+    print(vcp.model_context)
+
+    if subpath.is_dir():
+        print("Sub directories in '{}':".format(subpath))
+        for item in subpath.iterdir():
+            if item.is_dir():
+                print(item.name)
+                for file in item.iterdir():
+                    if file.is_file():
+                        # Überprüfen Sie, ob der Dateiname mit "Captions-" beginnt und mit ".json" endet
+                        if file.name.startswith('filtered_captions.txt'):
+                            print(f"Found file {file}")
+                            filtered_captions = []
+                            # Datei gefunden, lesen Sie den Inhalt
+
+                            with open(file, 'r', encoding='utf-8') as f:
+                                lines = f.readlines()
+                                # Entferne Zeilenumbrüche und füge alle Zeilen zu einem String zusammen
+                                continuous_text = ' '.join(line.strip() for line in lines)
+                            openai.organization = vcp.open_ai_org_id
+                            openai.api_key = vcp.open_ai_api_token
+                            response = openai.ChatCompletion.create(
+                                model="gpt-4",  # Ersetze dies mit dem korrekten Modellnamen, falls erforderlich
+                                messages=[
+                                    {"role": "system", "content": "You are a helpful assistant."},
+                                    {"role": "user", "content": f"\"{vcp.model_context}\" \n\n The transcript for analysis is as follows: {continuous_text}"},
+                                ],
+                            )
+
+                            # Zugriff auf den 'text' innerhalb des ersten Objekts im 'choices' Array.
+                            text_content = response["choices"][0]["message"]["content"]
+
+                            target_enriched_file = subpath / item.name / "chat-gpt-powered.txt"
+
+                            # Überprüfen Sie, ob die Datei existiert, und löschen Sie sie, wenn sie existiert
+                            if target_enriched_file.exists():
+                                target_enriched_file.unlink()
+                            with open(target_enriched_file, 'w') as file:
+                                file.write(text_content)
+
+
 def _get_video_urls_list(directory: Path):
     """ Function to get video urls from local download_root_directory"""
     directory_path = Path(directory)
@@ -74,7 +119,7 @@ def _filter_captions(directory: str):
                             with open(file, 'r', encoding='utf-8') as f:
                                 captions = json.load(f)
                                 print(captions)
-                            # Filtere alle Untertitel heraus, deren "text"-Feld mit "[" beginnt und mit "]" endet,
+                                # Filtere alle Untertitel heraus, deren "text"-Feld mit "[" beginnt und mit "]" endet,
                                 # und schreibe den Text jedes verbleibenden Untertitels in eine Textdatei
                                 filtered_captions_absolute_path = file.parent / "filtered_captions.txt"
                                 with open(filtered_captions_absolute_path, 'w') as f:
@@ -84,7 +129,8 @@ def _filter_captions(directory: str):
                                             continue  # überspringe diesen Untertitel, wenn er mit "[" beginnt und mit "]" endet
                                         start = caption['start']
                                         duration = caption['duration']
-                                        f.write(f'{text} ({start:.3f}:{duration:.3f})\n')
+                                        f.write(f'{text} ({start:.3f})\n')
+                                        #f.write(f'{text} ({start:.3f}:{duration:.3f})\n')
 
 
 if __name__ == "__main__":
