@@ -17,15 +17,15 @@ app.add_typer(vcp_downloader)
 app.add_typer(vcp_filter)
 
 
-@app.command(name="fetch-videos", help="Download all CreativeCommon Content from a predefined configuration file.")
+@app.command(name="fetch-videos", help="Get potential videos from a predefined cfg keywords.")
 def _run_config(yml_path: Path):
-    vpc = _load_and_validate_yaml(yml_path)
+    vcp = _load_and_validate_yaml(yml_path)
     print("Checking data")
-    vc = VideoChecker(vpc)
+    vc = VideoChecker(vcp)
     try:
         print("Running vc")
         vc.run()
-        _filter_captions(vpc.download_root_directory)
+        _filter_captions(vcp.download_root_directory)
     except Exception as e:
         console.print(f"Exception {e} occured...")
 
@@ -129,8 +129,8 @@ def _filter_captions(directory: str):
                                             continue  # überspringe diesen Untertitel, wenn er mit "[" beginnt und mit "]" endet
                                         start = caption['start']
                                         duration = caption['duration']
-                                        f.write(f'{text} ({start:.3f})\n')
-                                        #f.write(f'{text} ({start:.3f}:{duration:.3f})\n')
+                                        #f.write(f'{text} ({start:.3f})\n')
+                                        f.write(f'{text} ({start:.3f}:{duration:.3f})\n')
 
 
 if __name__ == "__main__":
