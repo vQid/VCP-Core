@@ -1,10 +1,15 @@
-version: 0.10
+version: 0.11
 
-youtube_analiytics_api_token:
+youtube_analytics_api_token:
+open_ai_org_id:
+open_ai_api_token:
 
-download_root_directory: "C:\"
+download_root_directory: <PATH>
 
 amount_video_content: 10
 
+model_context:
+  - Placeholder
+
 keywords:
-  - example keyword
+  - keywords-placeholder
