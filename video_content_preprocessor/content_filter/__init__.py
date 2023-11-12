@@ -5,9 +5,9 @@ from googleapiclient.discovery import build
 
 from video_content_preprocessor.content_filter.video_searcher import VideoChecker
 
-from video_content_preprocessor.constants_config import DEVELOPER_KEY
 
-youtube = build('youtube', 'v3', developerKey=DEVELOPER_KEY)
+
+youtube = build('youtube', 'v3', developerKey="<DEVELOPER_KEY>")
 
 vcp_filter = typer.Typer(name="filter", help="Module to filter relevant video content from YouTube.")
 
