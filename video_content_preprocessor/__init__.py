@@ -9,6 +9,7 @@ from video_content_preprocessor.content_filter import vcp_filter, VideoChecker
 from video_content_preprocessor.downloader import vcp_downloader
 from video_content_preprocessor.downloader.video_audio_downloader import check_highest_available, \
     download_highest_video_and_audio
+from video_content_preprocessor.downloader.video_clipper import _extract_video_clips
 from video_content_preprocessor.validator import _load_and_validate_yaml
 
 app = typer.Typer()
@@ -72,7 +73,8 @@ def _enrich_caption(yml_path: Path):
                                 model="gpt-4",  # Ersetze dies mit dem korrekten Modellnamen, falls erforderlich
                                 messages=[
                                     {"role": "system", "content": "You are a helpful assistant."},
-                                    {"role": "user", "content": f"\"{vcp.model_context}\" \n\n The transcript for analysis is as follows: {continuous_text}"},
+                                    {"role": "user",
+                                     "content": f"\"{vcp.model_context}\" \n\n The transcript for analysis is as follows: {continuous_text}"},
                                 ],
                             )
 
@@ -86,6 +88,31 @@ def _enrich_caption(yml_path: Path):
                                 target_enriched_file.unlink()
                             with open(target_enriched_file, 'w') as file:
                                 file.write(text_content)
+
+
+@app.command(name="create-shorts", help="Download all CreativeCommon Content from a predefined configuration file.")
+def _run_config(yml_path: Path):
+    vpc = _load_and_validate_yaml(yml_path)
+    subpath = Path(vpc.download_root_directory) / "vcp"
+
+    if subpath.is_dir():
+        print("Sub directories in '{}':".format(subpath))
+        for item in subpath.iterdir():
+            file_path = None
+            mp4 = None
+            if item.is_dir():
+                print(item.name)
+                for file in item.iterdir():
+                    if file.is_file():
+                        # Check whether context file is available
+                        if file.name.startswith('chat-gpt-powered.txt'):
+                            file_path = file
+                        elif file.name.endswith('.mp4'):
+                            mp4 = file
+                if file_path is not None and mp4 is not None:
+                    _extract_video_clips(file_path, mp4)
+                else:
+                    console.print("Either mp4 not available OR text file is not found!")
 
 
 def _get_video_urls_list(directory: Path):
@@ -129,7 +156,7 @@ def _filter_captions(directory: str):
                                             continue  # überspringe diesen Untertitel, wenn er mit "[" beginnt und mit "]" endet
                                         start = caption['start']
                                         duration = caption['duration']
-                                        #f.write(f'{text} ({start:.3f})\n')
+                                        # f.write(f'{text} ({start:.3f})\n')
                                         f.write(f'{text} ({start:.3f}:{duration:.3f})\n')
 
 
