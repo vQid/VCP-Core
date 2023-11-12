@@ -43,7 +43,7 @@ def download_highest_video_and_audio(download_url: str, vcp_config):
     audio_stream = yt.streams.filter(only_audio=True, file_extension='mp4').desc().first()
 
     # Set the download path
-    item_saving_directory = Path(vcp_config.download_root_directory) / yt.video_id
+    item_saving_directory = Path(vcp_config.download_root_directory) / "vcp" / yt.video_id
     item_saving_directory.mkdir(exist_ok=True)
 
     # Download video and audio
