@@ -8,5 +8,6 @@ class VCP(BaseModel):
     amount_video_content: int
     open_ai_org_id: str
     open_ai_api_token: str
+    master_db_path: str
     model_context: list
     keywords: list

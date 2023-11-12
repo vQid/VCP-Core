@@ -8,6 +8,8 @@ download_root_directory: <PATH>
 
 amount_video_content: 10
 
+master_db_path: <PATH>
+
 model_context:
   - Placeholder
 
