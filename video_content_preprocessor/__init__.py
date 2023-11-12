@@ -33,12 +33,12 @@ def _run_config(yml_path: Path):
 
 @app.command(name="download-videos", help="Download all CreativeCommon Content from a predefined configuration file.")
 def _run_config(yml_path: Path):
-    vpc = _load_and_validate_yaml(yml_path)
-    urls = _get_video_urls_list(Path(vpc.download_root_directory) / "vcp")
+    vcp = _load_and_validate_yaml(yml_path)
+    urls = _get_video_urls_list(Path(vcp.download_root_directory) / "vcp")
     for url in urls:
         try:
             print(f"Downloading {url}")
-            download_highest_video_and_audio(url, vpc)
+            download_highest_video_and_audio(url, vcp)
             pass
         except Exception as e:
             console.print(f"Exception {e} occurred...")
