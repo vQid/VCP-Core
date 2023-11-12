@@ -7,16 +7,17 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.formatters import JSONFormatter
 
 from video_content_preprocessor.content_filter.entity.video import _write_video_to_csv, Video
+from video_content_preprocessor.model.schema import VCP
 
 
 class VideoChecker:
     """ Video Checker Thread"""
 
-    def __init__(self, vcp):
+    def __init__(self, vcp: VCP):
         self.youtube = build('youtube', 'v3', developerKey=vcp.youtube_analytics_api_token)
         self.root_sub_directory = Path(vcp.download_root_directory) / "vcp"
-        self.keywords_list = vcp
-        self.max_results = 10
+        self.keywords_list = vcp.keywords
+        self.max_results = vcp.amount_video_content
 
     def run(self):
         self.search_videos()
