@@ -4,8 +4,6 @@ from pathlib import Path
 from moviepy.editor import *
 from pytube import YouTube
 
-from video_content_preprocessor.constants_config import DOWNLOAD_ROOT_DIRECTORY
-
 
 def clean_filename(filename):
     """
@@ -77,7 +75,7 @@ def download_highest_video(download_url: str):
     yt = YouTube(download_url)
 
     # Set download path of the YouTube content
-    item_saving_directory = DOWNLOAD_ROOT_DIRECTORY / yt.video_id
+    item_saving_directory = "DOWNLOAD_ROOT_DIRECTORY" / yt.video_id
     item_saving_directory.mkdir(exist_ok=True)
 
     print("Found highest quality video and audio:")
@@ -102,7 +100,7 @@ def download_highest_audio(download_url: str):
     yt = YouTube(download_url)
 
     # Set download path of the YouTube content
-    item_saving_directory = DOWNLOAD_ROOT_DIRECTORY / yt.video_id
+    item_saving_directory = "DOWNLOAD_ROOT_DIRECTORY" / yt.video_id
     item_saving_directory.mkdir(exist_ok=True)
 
     print("Found highest quality video and audio:")
