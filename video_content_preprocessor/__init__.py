@@ -34,11 +34,12 @@ def _run_config(yml_path: Path):
 @app.command(name="download-videos", help="Download all CreativeCommon Content from a predefined configuration file.")
 def _run_config(yml_path: Path):
     vcp = _load_and_validate_yaml(yml_path)
-    urls = _get_video_urls_list(Path(vcp.download_root_directory) / "vcp")
-    for url in urls:
+    urls_dictionary = _get_video_urls_list(Path(vcp.download_root_directory) / "vcp")
+    for index, key in enumerate(urls_dictionary):
+        console.print(f"Printing video nr. {index} of {len(urls_dictionary)}.")
         try:
-            print(f"Downloading {url}")
-            download_highest_video_and_audio(url, vcp)
+            print(f"Downloading {urls_dictionary[key]}")
+            download_highest_video_and_audio(urls_dictionary[key], vcp)
             pass
         except Exception as e:
             console.print(f"Exception {e} occurred...")
@@ -118,13 +119,13 @@ def _run_config(yml_path: Path):
 def _get_video_urls_list(directory: Path):
     """ Function to get video urls from local download_root_directory"""
     directory_path = Path(directory)
-    urls = []
+    urls = {}
     if directory_path.is_dir():
         print("Sub directories in '{}':".format(directory))
         for item in directory_path.iterdir():
             if item.is_dir():
                 url = f"https://www.youtube.com/watch?v={item.name}"
-                urls.append(url)
+                urls[item] = url
                 print(url)
     return urls
 
