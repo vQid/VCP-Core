@@ -16,10 +16,12 @@ def _extract_video_clips(text_file_path, video_file_path):
     with text_file_path.open('r') as file:
         content = file.read()
 
-        # Finden und Verarbeiten der <a>-Tags
-        for match in re.finditer(r"<a id='(\d+)' starttime='([\d.]+)' duration='([\d.]+)'>(.*?)</a>", content):
-            id, starttime, duration, text = match.groups()
-            id_tags.append({'id': id, 'starttime': float(starttime), 'duration': float(duration), 'text': text})
+        # Finden und Verarbeiten generischer Tags (z.B. <video>, <a>, etc.)
+        for match in re.finditer(r"<(\w+)\s+id=\"(\d+)\" starttime=\"([\d.]+)\" duration=\"([\d.]+)\">(.*?)</\1>",
+                                 content):
+            tag, id, starttime, duration, text = match.groups()
+            id_tags.append(
+                {'tag': tag, 'id': id, 'starttime': float(starttime), 'duration': float(duration), 'text': text})
 
     # Erstellen des Unterordners für die Clips
     shorts_dir = video_file_path.parent / 'shorts'
@@ -28,7 +30,7 @@ def _extract_video_clips(text_file_path, video_file_path):
     # Durchgehen der ID-Tags und Schneiden der Video-Clips
     for tag in id_tags:
         start = tag['starttime']
-        end = start + tag['duration']
+        end = start + tag['duration'] + 1.0
         clip_id = tag['id']
 
         with VideoFileClip(str(video_file_path)) as video:
